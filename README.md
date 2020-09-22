@@ -1,1 +1,2 @@
-# p02-srz2
+# Example-ClientNetworkingProject
+a template that can be used to start a client-based networking project
