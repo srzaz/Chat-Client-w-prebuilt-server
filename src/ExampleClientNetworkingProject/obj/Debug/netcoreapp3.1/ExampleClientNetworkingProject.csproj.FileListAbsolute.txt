@@ -11,3 +11,16 @@ C:\Users\Admin\Source\Repos\Example-ClientNetworkingProject\src\ExampleClientNet
 C:\Users\Admin\Source\Repos\Example-ClientNetworkingProject\src\ExampleClientNetworkingProject\obj\Debug\netcoreapp3.1\ExampleClientNetworkingProject.dll
 C:\Users\Admin\Source\Repos\Example-ClientNetworkingProject\src\ExampleClientNetworkingProject\obj\Debug\netcoreapp3.1\ExampleClientNetworkingProject.pdb
 C:\Users\Admin\Source\Repos\Example-ClientNetworkingProject\src\ExampleClientNetworkingProject\obj\Debug\netcoreapp3.1\ExampleClientNetworkingProject.genruntimeconfig.cache
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\bin\Debug\netcoreapp3.1\ExampleClientNetworkingProject.exe
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\bin\Debug\netcoreapp3.1\ExampleClientNetworkingProject.deps.json
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\bin\Debug\netcoreapp3.1\ExampleClientNetworkingProject.runtimeconfig.json
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\bin\Debug\netcoreapp3.1\ExampleClientNetworkingProject.runtimeconfig.dev.json
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\bin\Debug\netcoreapp3.1\ExampleClientNetworkingProject.dll
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\bin\Debug\netcoreapp3.1\ExampleClientNetworkingProject.pdb
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\obj\Debug\netcoreapp3.1\ExampleClientNetworkingProject.csprojAssemblyReference.cache
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\obj\Debug\netcoreapp3.1\ExampleClientNetworkingProject.AssemblyInfoInputs.cache
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\obj\Debug\netcoreapp3.1\ExampleClientNetworkingProject.AssemblyInfo.cs
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\obj\Debug\netcoreapp3.1\ExampleClientNetworkingProject.csproj.CoreCompileInputs.cache
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\obj\Debug\netcoreapp3.1\ExampleClientNetworkingProject.dll
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\obj\Debug\netcoreapp3.1\ExampleClientNetworkingProject.pdb
+c:\Users\Admin\source\repos\p02-srz2\src\ExampleClientNetworkingProject\obj\Debug\netcoreapp3.1\ExampleClientNetworkingProject.genruntimeconfig.cache
