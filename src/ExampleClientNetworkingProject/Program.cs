@@ -6,35 +6,84 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Text;
 
+
 namespace ExampleClientNetworkingProject
 {
+    
     class Program
     {
         //You can adapt the code below for communications on port 3461 and 3462.
-        static void SynchronousConnection(string address, int port)
+        static void SynchronousConnection(string address, int port, int authentication)
         {
-            try
-            {
-                TcpClient client = new TcpClient(address, port);
+            
 
-                //A using statement should automatically flush when it goes out of scope
-                using(BufferedStream stream = new BufferedStream(client.GetStream()))
+                try
                 {
-                    BinaryReader reader = new BinaryReader(stream);
-                    BinaryWriter writer = new BinaryWriter(stream);
 
-                    //TODO: do work!
+                    TcpClient client = new TcpClient(address,port);
+                    
+                    //A using statement should automatically flush when it goes out of scope
+                    using(BufferedStream stream = new BufferedStream(client.GetStream()))
+                    {
+                        BinaryReader reader = new BinaryReader(stream);
+                        BinaryWriter writer = new BinaryWriter(stream);
+                        //TODO: do work!
+                        writer.Write(IPAddress.NetworkToHostOrder(authentication));
+                        string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authentication));
+                        writer.Write(Encoding.UTF8.GetBytes(authkey));
+
+
+                        
+                    }
+
+
                 }
-
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("error: {0}", ex.Message);
-                throw ex;
-            }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("error: {0}", ex.Message);
+                    throw ex;
+                }
+            
         }
 
+        static void SynchronousConnection(string address, int port, string username,string password)
+        {
+            
+                try
+                {
+
+                    TcpClient client = new TcpClient(address,port);
+                    
+                    
+                    //A using statement should automatically flush when it goes out of scope
+                    using(BufferedStream stream = new BufferedStream(client.GetStream()))
+                    {
+                        BinaryReader reader = new BinaryReader(stream);
+                        BinaryWriter writer = new BinaryWriter(stream);
+                        //TODO: do work!
+                        writer.Write(IPAddress.NetworkToHostOrder(username.Length));
+                        writer.Write(Encoding.UTF8.GetBytes(username));
+                        
+                        writer.Write(IPAddress.NetworkToHostOrder(password.Length));
+                        writer.Write(Encoding.UTF8.GetBytes(password));
+                        
+                        int authkey_length = IPAddress.NetworkToHostOrder(reader.ReadInt32());
+                        string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authkey_length));
+                        
+                        Console.Write("Authentication Complete.");
+                        TaskedConnection(address, 3462, authkey_length).Wait();
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("error: {0}", ex.Message);
+                    throw ex;
+                }
+            
+        }
+        
         //A continuous connection is the best approach for communication on 3463
         public static void ContinuousConnection(string address, int port)
         {
@@ -59,24 +108,31 @@ namespace ExampleClientNetworkingProject
             }
             while(true)
             {
+                
                 //TODO: do work!
+
             }
         }
 
-        static async Task TaskedConnection(string address, int port)
+        static async Task TaskedConnection(string address, int port,  int authentication)
         {
-            await Task.Run(() => { SynchronousConnection(address, port); });
+            await Task.Run(() => { SynchronousConnection(address, port, authentication ); });
         }
 
+         static async Task TaskedConnection(string address, int port, string user, string password)
+        {
+            await Task.Run(() => { SynchronousConnection(address, port, user, password ); });
+        }
+        
         public static void ThreadedConnection(string address, int port)
         {
             ThreadStart ts = () => { ContinuousConnection(address, port); } ;
             Thread thread = new Thread(ts);
             thread.Start();
-
+            
             //if you want to block until the thread is done, call join.  Otherwise, you can
             //just return
-            //thread.Join();
+            thread.Join();
         }
         static void Main(string[] args)
         {
@@ -84,17 +140,7 @@ namespace ExampleClientNetworkingProject
             string username;
             string password;
             
-            BinaryWriter auth_writer = null;
-            BinaryReader auth_reader = null;
-            TcpClient auth_client = null;
-
-            BinaryWriter rec_writer = null;
-            BinaryReader rec_reader = null;
-            TcpClient rec_client = null;
-
-            BinaryWriter send_writer = null;
-            BinaryReader send_reader = null;
-            TcpClient send_client = null;
+            
 
             
             Console.Write("Enter server IP address: ");
@@ -106,37 +152,12 @@ namespace ExampleClientNetworkingProject
             Console.Write("Enter Password: ");
             password = Console.ReadLine();
 
+
            try{
-               auth_client = new TcpClient(address, 3461);
-               BufferedStream auth_stream = new BufferedStream(auth_client.GetStream());
-               auth_writer = new BinaryWriter(auth_stream);
-               auth_reader = new BinaryReader(auth_stream);
-
-               auth_writer.Write(IPAddress.NetworkToHostOrder(username.Length));
-               auth_writer.Write(Encoding.UTF8.GetBytes(username));
-
-               auth_writer.Write(IPAddress.NetworkToHostOrder(password.Length));
-               auth_writer.Write(Encoding.UTF8.GetBytes(password));
-
-               int accesskey_length = IPAddress.NetworkToHostOrder(auth_reader.ReadInt32());
-               string accesskey = Encoding.UTF8.GetString(auth_reader.ReadBytes(accesskey_length));
                
-               send_client = new TcpClient(address, 3462);
-               BufferedStream send_stream = new BufferedStream(send_client.GetStream());
-               send_writer = new BinaryWriter(send_stream);
-               send_reader = new BinaryReader(send_stream);
-
-               send_writer.Write(IPAddress.NetworkToHostOrder(accesskey_length));
-               send_writer.Write(Encoding.UTF8.GetBytes(accesskey));
+                TaskedConnection(address, 3461, username, password).Wait();
                
-               rec_client = new TcpClient(address, 3463);
-               BufferedStream rec_stream = new BufferedStream(rec_client.GetStream());
-               rec_writer = new BinaryWriter(rec_stream);
-               rec_reader = new BinaryReader(rec_stream);
-
-
-               Console.WriteLine(accesskey);
-               Console.WriteLine("Authentication complete.");
+               
 
 
 

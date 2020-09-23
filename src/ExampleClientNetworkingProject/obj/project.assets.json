@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Source\\Repos\\Example-ClientNetworkingProject\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj",
+      "projectUniqueName": "c:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj",
       "projectName": "ExampleClientNetworkingProject",
-      "projectPath": "C:\\Users\\Admin\\Source\\Repos\\Example-ClientNetworkingProject\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj",
+      "projectPath": "c:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Source\\Repos\\Example-ClientNetworkingProject\\src\\ExampleClientNetworkingProject\\obj\\",
+      "outputPath": "c:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
