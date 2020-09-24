@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj": {}
+    "C:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj": {
+    "C:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj",
         "projectName": "ExampleClientNetworkingProject",
-        "projectPath": "c:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj",
+        "projectPath": "C:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",

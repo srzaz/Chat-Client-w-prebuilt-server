@@ -34,8 +34,6 @@ namespace ExampleClientNetworkingProject
                         string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authentication));
                         writer.Write(Encoding.UTF8.GetBytes(authkey));
                         
-
-                        
                     }
 
 
@@ -73,8 +71,9 @@ namespace ExampleClientNetworkingProject
                         string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authkey_length));
                         
                         Console.Write("Authentication Complete.");
-                        TaskedConnection(address, 3462, authkey_length).Wait();
                         ThreadedConnection(address, 3463, username, authkey_length);
+                        TaskedConnection(address, 3462, authkey_length).Wait();
+                        
                     }
 
 
@@ -102,7 +101,7 @@ namespace ExampleClientNetworkingProject
                 reader = new BinaryReader(stream);
                 writer = new BinaryWriter(stream);
                 
-                
+               
                 //if you don't use a using statement, you'll need to flush manually.
                 stream.Flush();
             }
@@ -116,13 +115,15 @@ namespace ExampleClientNetworkingProject
                 foreach(string message in Messages){
                     Console.Write(username + ": " + message);
                 }
-                Console.Write("");
+                
+                Console.Write(username + ": ");
                 Messages.Clear();
                 string new_msg = Console.ReadLine();
                 Messages.Enqueue(new_msg);
 
-                writer.Write(IPAddress.NetworkToHostOrder(authentication));
+                
                 string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authentication));
+                writer.Write(IPAddress.NetworkToHostOrder(authentication));
                 writer.Write(Encoding.UTF8.GetBytes(authkey));
 
                 writer.Write(IPAddress.NetworkToHostOrder(new_msg.Length));
@@ -153,16 +154,13 @@ namespace ExampleClientNetworkingProject
             
             //if you want to block until the thread is done, call join.  Otherwise, you can
             //just return
-            thread.Join();
+            //thread.Join();
         }
         static void Main(string[] args)
         {
-            string address;
-            string username;
-            string password;
-            
-            
-
+            string address = null;
+            string username = null;
+            string password = null;
             
             Console.Write("Enter server IP address: ");
             address = Console.ReadLine();
@@ -175,14 +173,8 @@ namespace ExampleClientNetworkingProject
 
 
            try{
-               
                 TaskedConnection(address, 3461, username, password).Wait();
                 
-               
-
-
-
-
            }    
 
            catch(Exception e){
