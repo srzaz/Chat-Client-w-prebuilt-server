@@ -70,9 +70,9 @@ namespace ExampleClientNetworkingProject
                         int authkey_length = IPAddress.NetworkToHostOrder(reader.ReadInt32());
                         string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authkey_length));
                         
-                        Console.Write("Authentication Complete.");
+                        Console.Write("Authentication Complete. Your key is: " + authkey);
                         ThreadedConnection(address, 3463, username, authkey_length);
-                        TaskedConnection(address, 3462, authkey_length).Wait();
+                        
                         
                     }
 
@@ -100,8 +100,8 @@ namespace ExampleClientNetworkingProject
                 stream = new BufferedStream(client.GetStream());
                 reader = new BinaryReader(stream);
                 writer = new BinaryWriter(stream);
+                writer.Write(IPAddress.NetworkToHostOrder(authentication));
                 
-               
                 //if you don't use a using statement, you'll need to flush manually.
                 stream.Flush();
             }
@@ -113,26 +113,31 @@ namespace ExampleClientNetworkingProject
             while(true)
             {
                 foreach(string message in Messages){
-                    Console.Write(username + ": " + message);
+                   string msg = username + ": " + message + "\n";
+                   writer.Write(IPAddress.NetworkToHostOrder(msg.Length));
+                   
                 }
                 
-                Console.Write(username + ": ");
+                Console.Write(username + "\n" + ": ");
                 Messages.Clear();
                 string new_msg = Console.ReadLine();
                 Messages.Enqueue(new_msg);
-
                 
-                string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authentication));
-                writer.Write(IPAddress.NetworkToHostOrder(authentication));
-                writer.Write(Encoding.UTF8.GetBytes(authkey));
+                TcpClient rec_client = new TcpClient(address, 3462);
+                BufferedStream rec_stream = new BufferedStream(rec_client.GetStream());
+                
+                BinaryWriter messenger = new BinaryWriter(rec_stream);
+                
+                messenger.Write(IPAddress.NetworkToHostOrder(authentication));
 
-                writer.Write(IPAddress.NetworkToHostOrder(new_msg.Length));
-                writer.Write(Encoding.UTF8.GetBytes(new_msg));
+                messenger.Write(IPAddress.NetworkToHostOrder(new_msg.Length));
+                messenger.Write(Encoding.UTF8.GetBytes(new_msg));
 
-                writer.Flush();
+
+
+                messenger.Flush();
 
                 //TODO: do work!
-
             }
         }
 
