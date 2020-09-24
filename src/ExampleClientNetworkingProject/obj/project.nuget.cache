@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rW+JWKpdgm1rFl1fiGLUhcLfJjtekrUxANuE7e38LF4Q8rw9beS1RFAyca4Ee1nZDYXDx7QBHeiYk+50GBJmMg==",
+  "dgSpecHash": "GKTk30D7bs5NzL92U/AldgCOrh78Whkx9GkVprWldRcB87MYICDrfNPZzBCqalMAcyYzTFRhGJ6CwFBfxrpBNA==",
   "success": true,
-  "projectFilePath": "c:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\source\\repos\\p02-srz2\\src\\ExampleClientNetworkingProject\\ExampleClientNetworkingProject.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
