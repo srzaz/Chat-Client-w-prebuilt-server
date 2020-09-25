@@ -6,37 +6,45 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
-Queue<string> Messages();
+
 namespace ExampleClientNetworkingProject
 {
-    
+
     class Program
     {
-
-        //You can adapt the code below for communications on port 3461 and 3462.
-        static void SynchronousConnection(string address, int port, int authentication)
+        static class Messanger
         {
-
-
+            public static Queue<KeyValuePair<string, string>> Messages;
+        }
+        //You can adapt the code below for communications on port 3461 and 3462.
+        static void SynchronousConnection(string address, int port, string authentication)
+        {
             try
             {
-
-                TcpClient client = new TcpClient(address, port);
-
-                //A using statement should automatically flush when it goes out of scope
-                using (BufferedStream stream = new BufferedStream(client.GetStream()))
+                while (true)
                 {
+                    TcpClient client = new TcpClient(address, port);
+
+                    //A using statement should automatically flush when it goes out of scope
+                    BufferedStream stream = new BufferedStream(client.GetStream());
                     BinaryReader reader = new BinaryReader(stream);
                     BinaryWriter writer = new BinaryWriter(stream);
                     //TODO: do work!
-                    writer.Write(IPAddress.NetworkToHostOrder(authentication));
-                    string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authentication));
-                    writer.Write(Encoding.UTF8.GetBytes(authkey));
+                    writer.Write(IPAddress.NetworkToHostOrder(authentication.Length));
+                    writer.Write(Encoding.UTF8.GetBytes(authentication));
+                    Console.Write("Say something [q = quit; enter = refresh chat]: ");
 
+                    string new_msg = Console.ReadLine();
+                    Console.Write("\n");
+
+                    writer.Write(IPAddress.NetworkToHostOrder(new_msg.Length));
+                    writer.Write(Encoding.UTF8.GetBytes(new_msg));
+
+                    writer.Flush();
                 }
 
-
             }
+
             catch (Exception ex)
             {
                 Console.WriteLine("error: {0}", ex.Message);
@@ -52,8 +60,6 @@ namespace ExampleClientNetworkingProject
             {
 
                 TcpClient client = new TcpClient(address, port);
-
-
                 //A using statement should automatically flush when it goes out of scope
                 using (BufferedStream stream = new BufferedStream(client.GetStream()))
                 {
@@ -70,8 +76,8 @@ namespace ExampleClientNetworkingProject
                     string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authkey_length));
 
                     Console.Write("Authentication Complete. Your key is: " + authkey + "\n");
-                    ThreadedConnection(address, 3463, username, authkey_length);
-
+                    ThreadedConnection(address, 3463, username, authkey);
+                    TaskedConnection(address, 3462, authkey).Wait();
 
                 }
 
@@ -86,9 +92,9 @@ namespace ExampleClientNetworkingProject
         }
 
         //A continuous connection is the best approach for communication on 3463
-        public static void ContinuousConnection(string address, int port, string username, int authentication)
+        public static void ContinuousConnection(string address, int port, string username, string authentication)
         {
-            
+
 
             try
             {
@@ -98,41 +104,11 @@ namespace ExampleClientNetworkingProject
                 {
                     BinaryReader reader = new BinaryReader(stream);
                     BinaryWriter writer = new BinaryWriter(stream);
-                    writer.Write(IPAddress.NetworkToHostOrder(authentication));
+                    writer.Write(IPAddress.NetworkToHostOrder(authentication.Length));
+                    writer.Write(Encoding.UTF8.GetBytes(authentication));
 
                     //if you don't use a using statement, you'll need to flush manually.
-                    while (true)
-                    {
-                        foreach (string message in Messages)
-                        {
-                            string msg = username + ": " + message + "\n";
-                            writer.Write(IPAddress.NetworkToHostOrder(msg.Length));
-                            writer.Write(Encoding.UTF8.GetBytes(msg));    
-                        
-                        }
-                        Console.Write("Say something [q = quit; enter = refresh chat]: ");
-                        Messages.Clear();
-                        string new_msg = Console.ReadLine();
-                        Console.Write("\n");
-                        Messages.Enqueue(new_msg);
 
-                        TcpClient rec_client = new TcpClient(address, 3462);
-                        BufferedStream rec_stream = new BufferedStream(rec_client.GetStream());
-
-                        BinaryWriter messenger = new BinaryWriter(rec_stream);
-
-                        messenger.Write(IPAddress.NetworkToHostOrder(authentication));
-
-                        messenger.Write(IPAddress.NetworkToHostOrder(new_msg.Length));
-                        messenger.Write(Encoding.UTF8.GetBytes(new_msg));
-
-                        writer.Write(IPAddress.NetworkToHostOrder(new_msg.Length));
-                        writer.Write(Encoding.UTF8.GetBytes(new_msg));
-
-                        messenger.Flush();
-
-                        //TODO: do work!
-                    }
                 }
             }
             catch (Exception ex)
@@ -143,7 +119,7 @@ namespace ExampleClientNetworkingProject
 
         }
 
-        static async Task TaskedConnection(string address, int port, int authentication)
+        static async Task TaskedConnection(string address, int port, string authentication)
         {
             await Task.Run(() => { SynchronousConnection(address, port, authentication); });
         }
@@ -153,7 +129,7 @@ namespace ExampleClientNetworkingProject
             await Task.Run(() => { SynchronousConnection(address, port, user, password); });
         }
 
-        public static void ThreadedConnection(string address, int port, string username, int authentication)
+        public static void ThreadedConnection(string address, int port, string username, string authentication)
         {
             ThreadStart ts = () => { ContinuousConnection(address, port, username, authentication); };
             Thread thread = new Thread(ts);
@@ -169,6 +145,8 @@ namespace ExampleClientNetworkingProject
             string username = null;
             string password = null;
 
+
+
             Console.Write("Enter server IP address: ");
             address = Console.ReadLine();
 
@@ -181,7 +159,7 @@ namespace ExampleClientNetworkingProject
 
             try
             {
-                TaskedConnection(address, 3461, username, password).Wait();
+                SynchronousConnection(address, 3461, username, password);
 
             }
 
