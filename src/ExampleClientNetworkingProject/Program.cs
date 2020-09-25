@@ -14,7 +14,7 @@ namespace ExampleClientNetworkingProject
     {
         static class Messanger
         {
-            public static Queue<KeyValuePair<string, string>> Messages;
+            public static Queue<KeyValuePair<string, string>> Messages = new Queue<KeyValuePair<string, string>>();
         }
         //You can adapt the code below for communications on port 3461 and 3462.
         static void SynchronousConnection(string address, int port, string authentication)
@@ -24,7 +24,7 @@ namespace ExampleClientNetworkingProject
                 while (true)
                 {
                     foreach((string user, string msg) in Messanger.Messages){
-                            Console.WriteLine(user + ": " + msg + "\n");
+                            Console.WriteLine(user + ": " + msg + "\n");      
                     }
                     
                     Messanger.Messages.Clear();
@@ -54,6 +54,7 @@ namespace ExampleClientNetworkingProject
             {
                 Console.WriteLine("error: {0}", ex.Message);
                 throw ex;
+                
             }
 
         }
@@ -81,9 +82,8 @@ namespace ExampleClientNetworkingProject
                     string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authkey_length));
 
                     Console.Write("Authentication Complete. Your key is: " + authkey + "\n" + "\n");
+                    TaskedConnection(address, 3462, authkey);
                     ThreadedConnection(address, 3463, username, authkey);
-                    TaskedConnection(address, 3462, authkey).Wait();
-
                 }
 
 
@@ -120,7 +120,7 @@ namespace ExampleClientNetworkingProject
                     string msg = Encoding.UTF8.GetString(msg_bytes);
 
                     Messanger.Messages.Enqueue(new KeyValuePair<string, string>(user, msg));
-                    
+                    writer.Flush();
                     //if you don't use a using statement, you'll need to flush manually.
                 }
             }
