@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace ExampleClientNetworkingProject
 {
-
+    
     class Program
     {
         static class Messanger
@@ -23,6 +23,11 @@ namespace ExampleClientNetworkingProject
             {
                 while (true)
                 {
+                    foreach((string user, string msg) in Messanger.Messages){
+                            Console.WriteLine(user + ": " + msg + "\n");
+                    }
+                    
+                    Messanger.Messages.Clear();
                     TcpClient client = new TcpClient(address, port);
 
                     //A using statement should automatically flush when it goes out of scope
@@ -75,7 +80,7 @@ namespace ExampleClientNetworkingProject
                     int authkey_length = IPAddress.NetworkToHostOrder(reader.ReadInt32());
                     string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authkey_length));
 
-                    Console.Write("Authentication Complete. Your key is: " + authkey + "\n");
+                    Console.Write("Authentication Complete. Your key is: " + authkey + "\n" + "\n");
                     ThreadedConnection(address, 3463, username, authkey);
                     TaskedConnection(address, 3462, authkey).Wait();
 
@@ -95,20 +100,28 @@ namespace ExampleClientNetworkingProject
         public static void ContinuousConnection(string address, int port, string username, string authentication)
         {
 
-
             try
             {
-                TcpClient client = new TcpClient(address, port);
-
-                using (BufferedStream stream = new BufferedStream(client.GetStream()))
+                while (true)
                 {
+                    TcpClient client = new TcpClient(address, port);
+                    BufferedStream stream = new BufferedStream(client.GetStream());
                     BinaryReader reader = new BinaryReader(stream);
                     BinaryWriter writer = new BinaryWriter(stream);
                     writer.Write(IPAddress.NetworkToHostOrder(authentication.Length));
                     writer.Write(Encoding.UTF8.GetBytes(authentication));
+                    
+                    int user_length = IPAddress.NetworkToHostOrder(reader.ReadInt32());
+                    byte[] user_bytes = reader.ReadBytes(user_length);
+                    string user = Encoding.UTF8.GetString(user_bytes);
 
+                    int msg_length = IPAddress.NetworkToHostOrder(reader.ReadInt32()); 
+                    byte[] msg_bytes = reader.ReadBytes(msg_length);   
+                    string msg = Encoding.UTF8.GetString(msg_bytes);
+
+                    Messanger.Messages.Enqueue(new KeyValuePair<string, string>(user, msg));
+                    
                     //if you don't use a using statement, you'll need to flush manually.
-
                 }
             }
             catch (Exception ex)
