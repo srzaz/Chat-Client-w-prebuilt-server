@@ -19,46 +19,32 @@ namespace ExampleClientNetworkingProject
         //You can adapt the code below for communications on port 3461 and 3462.
         static void SynchronousConnection(string address, int port, string authentication)
         {
-
-
             try
             {
-
-                TcpClient client = new TcpClient(address, port);
-
-                //A using statement should automatically flush when it goes out of scope
-                using (BufferedStream stream = new BufferedStream(client.GetStream()))
+                while (true)
                 {
+                    TcpClient client = new TcpClient(address, port);
+
+                    //A using statement should automatically flush when it goes out of scope
+                    BufferedStream stream = new BufferedStream(client.GetStream());
                     BinaryReader reader = new BinaryReader(stream);
                     BinaryWriter writer = new BinaryWriter(stream);
                     //TODO: do work!
-                    
+                    writer.Write(IPAddress.NetworkToHostOrder(authentication.Length));
+                    writer.Write(Encoding.UTF8.GetBytes(authentication));
+                    Console.Write("Say something [q = quit; enter = refresh chat]: ");
 
-                    while (true)
-                    {
-                        writer.Write(IPAddress.NetworkToHostOrder(authentication.Length));
-                        Console.Write("Say something [q = quit; enter = refresh chat]: ");
-                        
-                        string new_msg = Console.ReadLine();
-                        Console.Write("\n");
+                    string new_msg = Console.ReadLine();
+                    Console.Write("\n");
 
-                        writer.Write(IPAddress.NetworkToHostOrder(new_msg.Length));
-                        writer.Write(Encoding.UTF8.GetBytes(new_msg));
-                        
-                        int message_length = IPAddress.NetworkToHostOrder(reader.ReadInt32());
-                        string message = Encoding.UTF8.GetString(reader.ReadBytes(message_length));
+                    writer.Write(IPAddress.NetworkToHostOrder(new_msg.Length));
+                    writer.Write(Encoding.UTF8.GetBytes(new_msg));
 
-                        Console.Write(message);
-
-                        writer.Flush();
-                    }
-
-
-
+                    writer.Flush();
                 }
 
-
             }
+
             catch (Exception ex)
             {
                 Console.WriteLine("error: {0}", ex.Message);
@@ -74,8 +60,6 @@ namespace ExampleClientNetworkingProject
             {
 
                 TcpClient client = new TcpClient(address, port);
-
-
                 //A using statement should automatically flush when it goes out of scope
                 using (BufferedStream stream = new BufferedStream(client.GetStream()))
                 {
@@ -121,10 +105,10 @@ namespace ExampleClientNetworkingProject
                     BinaryReader reader = new BinaryReader(stream);
                     BinaryWriter writer = new BinaryWriter(stream);
                     writer.Write(IPAddress.NetworkToHostOrder(authentication.Length));
-
+                    writer.Write(Encoding.UTF8.GetBytes(authentication));
 
                     //if you don't use a using statement, you'll need to flush manually.
-                   
+
                 }
             }
             catch (Exception ex)
@@ -172,7 +156,7 @@ namespace ExampleClientNetworkingProject
             Console.Write("Enter Password: ");
             password = Console.ReadLine();
 
-            
+
             try
             {
                 SynchronousConnection(address, 3461, username, password);
