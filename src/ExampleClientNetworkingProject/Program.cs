@@ -9,12 +9,12 @@ using System.Collections.Generic;
 
 namespace ExampleClientNetworkingProject
 {
-    
+
     class Program
     {
         static class Messanger
         {
-            public static Queue<KeyValuePair<string, string>> Messages = new Queue<KeyValuePair<string, string>>();
+            public static Queue<Tuple<string, string>> Messages = new Queue<Tuple<string, string>>();
         }
         //You can adapt the code below for communications on port 3461 and 3462.
         static void SynchronousConnection(string address, int port, string authentication)
@@ -23,10 +23,11 @@ namespace ExampleClientNetworkingProject
             {
                 while (true)
                 {
-                    foreach((string user, string msg) in Messanger.Messages){
-                            Console.WriteLine(user + ": " + msg + "\n");      
+                    foreach ((string user, string msg) in Messanger.Messages)
+                    {
+                        Console.WriteLine(user + ": " + msg + "\n");
                     }
-                    
+
                     Messanger.Messages.Clear();
                     TcpClient client = new TcpClient(address, port);
 
@@ -54,7 +55,7 @@ namespace ExampleClientNetworkingProject
             {
                 Console.WriteLine("error: {0}", ex.Message);
                 throw ex;
-                
+
             }
 
         }
@@ -83,8 +84,9 @@ namespace ExampleClientNetworkingProject
 
                     Console.Write("Authentication Complete. Your key is: " + authkey + "\n" + "\n");
                     
+                    TaskedConnection(address, 3462, authkey);
                     ThreadedConnection(address, 3463, username, authkey);
-                    SynchronousConnection(address, 3462, authkey);
+                    
                 }
 
 
@@ -103,28 +105,31 @@ namespace ExampleClientNetworkingProject
 
             try
             {
+
+                TcpClient client = new TcpClient(address, port);
+                BufferedStream stream = new BufferedStream(client.GetStream());
+                BinaryReader reader = new BinaryReader(stream);
+                BinaryWriter writer = new BinaryWriter(stream);
                 while (true)
                 {
-                    TcpClient client = new TcpClient(address, port);
-                    BufferedStream stream = new BufferedStream(client.GetStream());
-                    BinaryReader reader = new BinaryReader(stream);
-                    BinaryWriter writer = new BinaryWriter(stream);
                     writer.Write(IPAddress.NetworkToHostOrder(authentication.Length));
                     writer.Write(Encoding.UTF8.GetBytes(authentication));
-                    
+
                     int user_length = IPAddress.NetworkToHostOrder(reader.ReadInt32());
                     byte[] user_bytes = reader.ReadBytes(user_length);
                     string user = Encoding.UTF8.GetString(user_bytes);
 
-                    int msg_length = IPAddress.NetworkToHostOrder(reader.ReadInt32()); 
-                    byte[] msg_bytes = reader.ReadBytes(msg_length);   
+                    int msg_length = IPAddress.NetworkToHostOrder(reader.ReadInt32());
+                    byte[] msg_bytes = reader.ReadBytes(msg_length);
                     string msg = Encoding.UTF8.GetString(msg_bytes);
 
-                    Messanger.Messages.Enqueue(new KeyValuePair<string, string>(user, msg));
+                    Messanger.Messages.Enqueue(new Tuple<string, string>(user, msg));
                     writer.Flush();
-                    //if you don't use a using statement, you'll need to flush manually.
                 }
+                //if you don't use a using statement, you'll need to flush manually.
+
             }
+
             catch (Exception ex)
             {
                 Console.WriteLine("error: {0}", ex.Message);
@@ -151,7 +156,7 @@ namespace ExampleClientNetworkingProject
 
             //if you want to block until the thread is done, call join.  Otherwise, you can
             //just return
-            //thread.Join();
+            thread.Join();
         }
         static void Main(string[] args)
         {
