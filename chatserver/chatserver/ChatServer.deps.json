@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "ChatServer/1.0.0": {
+        "dependencies": {
+          "ChatServer.Library": "1.0.0"
+        },
+        "runtime": {
+          "ChatServer.dll": {}
+        }
+      },
+      "ChatServer.Library/1.0.0": {
+        "runtime": {
+          "ChatServer.Library.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ChatServer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ChatServer.Library/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
