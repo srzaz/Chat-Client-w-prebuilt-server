@@ -82,8 +82,9 @@ namespace ExampleClientNetworkingProject
                     string authkey = Encoding.UTF8.GetString(reader.ReadBytes(authkey_length));
 
                     Console.Write("Authentication Complete. Your key is: " + authkey + "\n" + "\n");
-                    TaskedConnection(address, 3462, authkey);
+                    
                     ThreadedConnection(address, 3463, username, authkey);
+                    SynchronousConnection(address, 3462, authkey);
                 }
 
 
